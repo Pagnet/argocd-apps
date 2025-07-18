@@ -1,0 +1,20 @@
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  name: exemplo-ec2
+spec:
+  forProvider:
+    region: us-east-1
+    instanceType: t3.micro
+    ami: ami-0c94855ba95c71c99 # Exemplo: Amazon Linux 2 na região us-east-1
+    subnetIdSelector:
+      matchLabels:
+        crossplane.io/claim-name: default-subnet
+    securityGroupIdSelector:
+      matchLabels:
+        crossplane.io/claim-name: default-sg
+    tags:
+      - key: Name
+        value: exemplo-ec2
+  providerConfigRef:
+    name: aws-provider
