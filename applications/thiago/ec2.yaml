@@ -38,3 +38,5 @@ spec:
         value: exemplo
       - key: ManagedBy
         value: crossplane
+  providerConfigRef:
+    name: aws-provider-config
