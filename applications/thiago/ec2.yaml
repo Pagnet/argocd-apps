@@ -18,7 +18,7 @@ spec:
         deleteOnTermination: true
         encrypted: true
     vpcSecurityGroupIds:        # ✅ CORRECT
-      - sg-0123456789abcdef0
+      - sg-09f6b39b646df3bb7
     userData: |
       #!/bin/bash
       yum update -y
