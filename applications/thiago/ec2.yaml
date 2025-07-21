@@ -6,9 +6,8 @@ spec:
   forProvider:
     region: us-east-1
     instanceType: t3.micro
-    subnetIdSelector:
-      matchControllerRef: true  # Vai buscar subnet na mesma stack
-    imageId: ami-0c02fb55956c7d316  # Amazon Linux 2 - us-east-1
+    subnetId: subnet-01543f0c2f9c8d7c4
+    imageId: ami-0c02fb55956c7d316
     tags:
       - key: Name
         value: exemplo-crossplane
