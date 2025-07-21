@@ -1,0 +1,16 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Instance
+metadata:
+  name: exemplo-ec2
+spec:
+  forProvider:
+    region: us-east-1
+    instanceType: t3.micro
+    subnetIdSelector:
+      matchControllerRef: true  # Vai buscar subnet na mesma stack
+    imageId: ami-0c02fb55956c7d316  # Amazon Linux 2 - us-east-1
+    tags:
+      - key: Name
+        value: exemplo-crossplane
+  providerConfigRef:
+    name: aws-provider-config
