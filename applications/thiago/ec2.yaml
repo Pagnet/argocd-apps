@@ -1,7 +1,7 @@
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: Instance
 metadata:
-  name: exemplo-ec2
+  name:  minha-ec2
   namespace: crossplane-system
   labels:
     app: exemplo
