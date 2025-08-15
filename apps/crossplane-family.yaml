@@ -1,17 +1,17 @@
-# apps/infra-crossplane-providers.yaml  (no repo Pagnet/argocd-apps)
+# argocd-apps/apps/crossplane-family.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-providers
+  name: crossplane-family-aws
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"    # primeiro
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: platform
   source:
     repoURL: https://github.com/Pagnet/crossplane
     targetRevision: main
-    path: providers/aws
+    path: providers/family-aws
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane
