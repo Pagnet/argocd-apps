@@ -1,22 +1,21 @@
-# apps/crossplane-aws-services.yaml
+# apps/crossplane-runtime.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-aws-services
+  name: crossplane-runtime
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   project: platform
   source:
     repoURL: https://github.com/Pagnet/crossplane
     targetRevision: main
-    path: providers/aws-services
+    path: runtime
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
-      - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true
+      - CreateNamespace=true

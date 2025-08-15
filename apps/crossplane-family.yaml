@@ -1,4 +1,4 @@
-# argocd-apps/apps/crossplane-family.yaml
+# apps/crossplane-family.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -18,5 +18,4 @@ spec:
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
-      - CreateNamespace=true
       - ServerSideApply=true
