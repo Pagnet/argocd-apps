@@ -1,11 +1,8 @@
-# apps/infra-crossplane-resources.yaml  (no repo Pagnet/argocd-apps)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: crossplane-resources
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "5"    # depois dos providers
 spec:
   project: platform
   source:
@@ -19,3 +16,4 @@ spec:
     automated: { prune: true, selfHeal: true }
     syncOptions:
       - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true   # enquanto as CRDs sobem
