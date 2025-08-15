@@ -1,0 +1,22 @@
+# apps/infra-crossplane-providers.yaml  (no repo Pagnet/argocd-apps)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-providers
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"    # primeiro
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/Pagnet/crossplane
+    targetRevision: main
+    path: providers/aws
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: crossplane
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
