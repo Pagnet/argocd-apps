@@ -7,8 +7,14 @@ This repository contains the application definitions for ArgoCD using the App-of
 ```
 argocd-apps/
 ├── applications/          # Application definitions
-├── apps/                 # App-of-Apps applications
+│   ├── dev/             # Development environment applications
+│   ├── staging/         # Staging environment applications
+│   ├── prod/            # Production environment applications
+│   └── environment-config.md  # Environment configuration guide
 ├── projects/             # ArgoCD project definitions
+│   ├── default-project.yaml      # Default project
+│   └── environment-projects.yaml # Environment-specific projects
+├── bootstrap/            # Bootstrap application
 └── README.md            # This file
 ```
 
@@ -34,7 +40,8 @@ This repository is managed by ArgoCD and contains:
 
 ### 1. Create Application Definition
 
-Create an application file in `apps/`:
+
+Create an application file in the appropriate environment directory under `applications/`:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -116,7 +123,40 @@ helm:
 Projects define access control and resource permissions:
 
 - **default**: Basic application deployment permissions
+- **development**: Development environment with developer access
+- **staging**: Staging environment with developer and QA access
+- **production**: Production environment with SRE and admin access
+
+## Environment Management
+
+This repository follows a multi-environment approach:
+
+### Development (`applications/dev/`)
+- Single replica deployments
+- Minimal resource allocation
+- Debug logging enabled
+- Staging SSL certificates
+- Full developer access
+
+### Staging (`applications/staging/`)
+- Multi-replica deployments with auto-scaling
+- Medium resource allocation
+- Info-level logging
+- Staging SSL certificates
+- Developer and QA team access
+
+### Production (`applications/prod/`)
+- Multi-replica deployments with production auto-scaling
+- Full resource allocation
+- Warn-level logging
+- Production SSL certificates
+- Enhanced security context
+- SRE team and production admin access
+
+See `applications/environment-config.md` for detailed configuration differences.
+
 - **argocd-configuration**: ArgoCD configuration management
+
 
 ## Best Practices
 
@@ -126,6 +166,11 @@ Projects define access control and resource permissions:
 4. **Resource Limits**: Always define resource requests and limits
 5. **Health Checks**: Include health checks for critical resources
 6. **Labels**: Use consistent labeling for organization
+7. **Environment Isolation**: Deploy to environment-specific namespaces
+8. **Access Control**: Use environment-specific projects for security
+9. **Resource Scaling**: Scale resources appropriately per environment
+10. **Security**: Implement stricter security in production environments
+
 
 ## Troubleshooting
 

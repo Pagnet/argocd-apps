@@ -1,0 +1,99 @@
+# Path in repo: argocd-apps/applications/staging/sample-helm-app.yaml
+# Staging environment configuration for sample-helm-app
+# This is a sample application that demonstrates how to deploy applications using Helm charts
+# It shows the integration between ArgoCD and your external Helm repository
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-helm-app-staging
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: sample-helm-app
+    app.kubernetes.io/part-of: sample-apps
+    app.kubernetes.io/component: frontend
+    environment: staging
+    app.kubernetes.io/version: staging
+spec:
+  project: staging
+  source:
+    repoURL: https://blu-helm-charts.blu.com.br/api/charts
+    targetRevision: "1.0.0"  # Chart version from your Helm repository
+    chart: sample-app  # Chart name from your Helm repository
+    helm:
+      # Helm-specific configuration
+      releaseName: sample-app-staging
+      # Inline values (can be used instead of or in addition to valueFiles)
+      values: |
+        image:
+          repository: nginx
+          tag: "1.25"
+        service:
+          type: ClusterIP
+          port: 80
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            cert-manager.io/cluster-issuer: letsencrypt-staging
+          hosts:
+            - host: sample-app-staging.example.com
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: sample-app-staging-tls
+              hosts:
+                - sample-app-staging.example.com
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        # Staging-specific values
+        replicaCount: 2
+        autoscaling:
+          enabled: true
+          minReplicas: 2
+          maxReplicas: 5
+          targetCPUUtilizationPercentage: 70
+        # Staging environment overrides
+        environment: staging
+        debug: false
+        logLevel: info
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sample-apps-staging
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  
+  revisionHistoryLimit: 10
+  
+  # Health checks (optional)
+  healthChecks:
+    - group: apps
+      kind: Deployment
+      name: sample-app-staging
+      namespace: sample-apps-staging
+    - group: ""
+      kind: Service
+      name: sample-app-staging
+      namespace: sample-apps-staging

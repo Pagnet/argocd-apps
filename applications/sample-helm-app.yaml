@@ -1,0 +1,80 @@
+# Path in repo: argocd-apps/applications/sample-helm-app.yaml
+# This is a sample application that demonstrates how to deploy applications using Helm charts
+# It shows the integration between ArgoCD and your external Helm repository
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-helm-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: sample-helm-app
+    app.kubernetes.io/part-of: sample-apps
+    app.kubernetes.io/component: frontend
+spec:
+  project: default
+  source:
+    repoURL: https://blu-helm-charts.blu.com.br/api/charts
+    targetRevision: "1.0.0"  # Chart version from your Helm repository
+    chart: sample-app  # Chart name from your Helm repository
+    helm:
+      # Helm-specific configuration
+      releaseName: sample-app
+      # Inline values (can be used instead of or in addition to valueFiles)
+      values: |
+        image:
+          repository: nginx
+          tag: "1.25"
+        service:
+          type: ClusterIP
+          port: 80
+        ingress:
+          enabled: false
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        # Add any other Helm values here
+        replicaCount: 2
+        autoscaling:
+          enabled: true
+          minReplicas: 2
+          maxReplicas: 10
+          targetCPUUtilizationPercentage: 80
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sample-apps
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  
+  revisionHistoryLimit: 10
+  
+  # Health checks (optional)
+  healthChecks:
+    - group: apps
+      kind: Deployment
+      name: sample-app
+      namespace: sample-apps
+    - group: ""
+      kind: Service
+      name: sample-app
+      namespace: sample-apps

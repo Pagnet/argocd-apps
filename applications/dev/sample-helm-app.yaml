@@ -1,0 +1,96 @@
+# Path in repo: argocd-apps/applications/dev/sample-helm-app.yaml
+# Development environment configuration for sample-helm-app
+# This is a sample application that demonstrates how to deploy applications using Helm charts
+# It shows the integration between ArgoCD and your external Helm repository
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-helm-app-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: sample-helm-app
+    app.kubernetes.io/part-of: sample-apps
+    app.kubernetes.io/component: frontend
+    environment: dev
+    app.kubernetes.io/version: dev
+spec:
+  project: development
+  source:
+    repoURL: https://blu-helm-charts.blu.com.br/api/charts
+    targetRevision: "1.0.0"  # Chart version from your Helm repository
+    chart: sample-app  # Chart name from your Helm repository
+    helm:
+      # Helm-specific configuration
+      releaseName: sample-app-dev
+      # Inline values (can be used instead of or in addition to valueFiles)
+      values: |
+        image:
+          repository: nginx
+          tag: "1.25"
+        service:
+          type: ClusterIP
+          port: 80
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            cert-manager.io/cluster-issuer: letsencrypt-staging
+          hosts:
+            - host: sample-app-dev.example.com
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: sample-app-dev-tls
+              hosts:
+                - sample-app-dev.example.com
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        # Development-specific values
+        replicaCount: 1
+        autoscaling:
+          enabled: false
+        # Development environment overrides
+        environment: dev
+        debug: true
+        logLevel: debug
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sample-apps-dev
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
+  
+  revisionHistoryLimit: 5
+  
+  # Health checks (optional)
+  healthChecks:
+    - group: apps
+      kind: Deployment
+      name: sample-app-dev
+      namespace: sample-apps-dev
+    - group: ""
+      kind: Service
+      name: sample-app-dev
+      namespace: sample-apps-dev

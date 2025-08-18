@@ -1,0 +1,197 @@
+# Path in repo: argocd-apps/projects/environment-projects.yaml
+# Environment-specific projects for better access control and resource management
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: development
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: development-project
+    app.kubernetes.io/part-of: argocd-apps
+    environment: dev
+spec:
+  description: "Development environment project - provides development deployment permissions"
+  
+  # Source repositories allowed for this project
+  sourceRepos:
+    - "https://github.com/Pagnet/argocd-apps.git"
+    - "https://blu-helm-charts.blu.com.br/api/charts"
+  
+  # Destination clusters and namespaces
+  destinations:
+    - namespace: "*-dev"
+      server: https://kubernetes.default.svc
+  
+  # Cluster resource allow list
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  
+  # Namespace resource allow list
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: "apps"
+      kind: Deployment
+    - group: "apps"
+      kind: StatefulSet
+    - group: "networking.k8s.io"
+      kind: Ingress
+  
+  # Roles for this project
+  roles:
+    - name: developer
+      description: "Developer role for development environment"
+      policies:
+        - p, proj:development:developer, applications, get, development/*, allow
+        - p, proj:development:developer, applications, sync, development/*, allow
+        - p, proj:development:developer, applications, action/*, development/*, allow
+      groups:
+        - developers
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: staging-project
+    app.kubernetes.io/part-of: argocd-apps
+    environment: staging
+spec:
+  description: "Staging environment project - provides staging deployment permissions"
+  
+  # Source repositories allowed for this project
+  sourceRepos:
+    - "https://github.com/Pagnet/argocd-apps.git"
+    - "https://blu-helm-charts.blu.com.br/api/charts"
+  
+  # Destination clusters and namespaces
+  destinations:
+    - namespace: "*-staging"
+      server: https://kubernetes.default.svc
+  
+  # Cluster resource allow list
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  
+  # Namespace resource allow list
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: "apps"
+      kind: Deployment
+    - group: "apps"
+      kind: StatefulSet
+    - group: "networking.k8s.io"
+      kind: Ingress
+  
+  # Roles for this project
+  roles:
+    - name: developer
+      description: "Developer role for staging environment"
+      policies:
+        - p, proj:staging:developer, applications, get, staging/*, allow
+        - p, proj:staging:developer, applications, sync, staging/*, allow
+        - p, proj:staging:developer, applications, action/*, staging/*, allow
+      groups:
+        - developers
+    - name: qa
+      description: "QA role for staging environment"
+      policies:
+        - p, proj:staging:qa, applications, get, staging/*, allow
+        - p, proj:staging:qa, applications, sync, staging/*, allow
+      groups:
+        - qa-team
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: production
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: production-project
+    app.kubernetes.io/part-of: argocd-apps
+    environment: production
+spec:
+  description: "Production environment project - provides production deployment permissions"
+  
+  # Source repositories allowed for this project
+  sourceRepos:
+    - "https://github.com/Pagnet/argocd-apps.git"
+    - "https://blu-helm-charts.blu.com.br/api/charts"
+  
+  # Destination clusters and namespaces
+  destinations:
+    - namespace: "*-prod"
+      server: https://kubernetes.default.svc
+  
+  # Cluster resource allow list
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  
+  # Namespace resource allow list
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: "apps"
+      kind: Deployment
+    - group: "apps"
+      kind: StatefulSet
+    - group: "networking.k8s.io"
+      kind: Ingress
+  
+  # Roles for this project
+  roles:
+    - name: developer
+      description: "Developer role for production environment (read-only)"
+      policies:
+        - p, proj:production:developer, applications, get, production/*, allow
+      groups:
+        - developers
+    - name: sre
+      description: "SRE role for production environment"
+      policies:
+        - p, proj:production:sre, applications, get, production/*, allow
+        - p, proj:production:sre, applications, sync, production/*, allow
+        - p, proj:production:sre, applications, action/*, production/*, allow
+      groups:
+        - sre-team
+    - name: admin
+      description: "Admin role for production environment"
+      policies:
+        - p, proj:production:admin, applications, *, production/*, allow
+        - p, proj:production:admin, applications, action/*, production/*, allow
+        - p, proj:production:admin, projects, get, production, allow
+      groups:
+        - production-admins
