@@ -40,6 +40,7 @@ This repository is managed by ArgoCD and contains:
 
 ### 1. Create Application Definition
 
+
 Create an application file in the appropriate environment directory under `applications/`:
 
 ```yaml
@@ -154,6 +155,9 @@ This repository follows a multi-environment approach:
 
 See `applications/environment-config.md` for detailed configuration differences.
 
+- **argocd-configuration**: ArgoCD configuration management
+
+
 ## Best Practices
 
 1. **Use External Helm Charts**: Reference charts from your Helm repository
@@ -166,6 +170,7 @@ See `applications/environment-config.md` for detailed configuration differences.
 8. **Access Control**: Use environment-specific projects for security
 9. **Resource Scaling**: Scale resources appropriately per environment
 10. **Security**: Implement stricter security in production environments
+
 
 ## Troubleshooting
 
