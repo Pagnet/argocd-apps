@@ -1,13 +1,26 @@
 # ArgoCD Applications Repository
 
-This repository contains ONLY real user applications. All ArgoCD configuration and management has been moved to the argocd-config repository.
+This repository contains ALL applications, including ArgoCD and Crossplane management applications, following the exact specifications from the original prompt.
 
 ## Structure
 
 ```
 argocd-apps/
   README.md
+  root/
+    app-of-apps.yaml
+  apps/
+    argocd-config.yaml
+    crossplane-core.yaml
+    crossplane-providers.yaml
+    crossplane.yaml
+    providers/
+      provider-aws.yaml
+      providerconfigs.yaml
+      irsa/
+        serviceaccount.yaml
+        iam-instructions.md
   kustomization.yaml
 ```
 
-This repository is reserved for real user applications only. All ArgoCD infrastructure management (App-of-Apps pattern, ArgoCD configuration, Crossplane management) is handled by the argocd-config repository.
+This repository contains ALL applications (including ArgoCD and Crossplane management applications) using the App-of-Apps pattern. The argocd-config repository contains only base configurations (projects, repositories, clusters, RBAC).
