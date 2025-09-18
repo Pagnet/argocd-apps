@@ -1,12 +1,12 @@
 # =============================================================================
-# AWS Provider Controller Configuration
+# AWS Provider Deployment Runtime Configuration
 # =============================================================================
-# This file contains the controller configuration for the AWS provider
-# following security and performance best practices.
+# This file contains the deployment runtime configuration for the AWS provider
+# following security and performance best practices for Crossplane v2.
 # =============================================================================
 
 apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
+kind: DeploymentRuntimeConfig
 metadata:
   name: aws-controller-config
   namespace: crossplane-system

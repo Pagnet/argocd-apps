@@ -27,5 +27,5 @@ spec:
   package: xpkg.upbound.io/upbound/provider-aws:v1.14.0
   packagePullPolicy: IfNotPresent
   ignoreCrossplaneConstraints: false
-  controllerConfigRef:
+  deploymentRuntimeConfigRef:
     name: aws-controller-config
