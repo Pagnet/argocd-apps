@@ -36,7 +36,6 @@ spec:
     directory:
       recurse: true
       include: "*.yaml"
-      exclude: "provider-aws.yaml"  # Excluir Provider - gerenciado separadamente
   
   # Destination configuration
   destination:
@@ -63,8 +62,14 @@ spec:
         factor: 2
         maxDuration: 3m
   
-  # Ignore differences for ProviderConfig resources only
+  # Ignore differences for Provider and ProviderConfig resources
   ignoreDifferences:
+    - group: pkg.crossplane.io
+      kind: Provider
+      jsonPointers:
+        - /status
+        - /metadata/annotations
+        - /metadata/finalizers
     - group: aws.crossplane.io
       kind: ProviderConfig
       jsonPointers:
