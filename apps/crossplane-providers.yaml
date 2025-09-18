@@ -1,33 +1,98 @@
+# =============================================================================
+# Crossplane Providers Application - ArgoCD Configuration
+# =============================================================================
+# This file defines the ArgoCD application for managing Crossplane providers
+# following GitOps best practices and production-ready configurations.
+#
+# Features:
+# - GitOps workflow with ArgoCD
+# - Health check optimization
+# - Retry and backoff strategies
+# - Security and compliance ready
+# =============================================================================
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: crossplane-providers
   namespace: argocd
+  labels:
+    app.kubernetes.io/name: crossplane-providers
+    app.kubernetes.io/component: crossplane
+    app.kubernetes.io/part-of: platform
+    app.kubernetes.io/managed-by: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: "PruneLast=true"
+    argocd.argoproj.io/compare-options: "IgnoreExtraneous"
 spec:
   project: platform
+  
+  # Source configuration
   source:
     repoURL: https://github.com/Pagnet/argocd-apps.git
     targetRevision: HEAD
     path: apps/providers
+    directory:
+      recurse: true
+      include: "*.yaml"
+      exclude: "*.md"
+  
+  # Destination configuration
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
+  
+  # Sync policy with best practices
   syncPolicy:
+    # Automated sync configuration
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    
+    # Sync options for optimal behavior
     syncOptions:
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground
       - PruneLast=true
       - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+    
+    # Retry configuration with exponential backoff
     retry:
-      limit: 5
+      limit: 10
       backoff:
         duration: 5s
         factor: 2
-        maxDuration: 3m
+        maxDuration: 5m
+    
+    # Health check configuration
+    healthChecks:
+      - apiVersion: pkg.crossplane.io/v1
+        kind: Provider
+        name: provider-aws
+        namespace: crossplane-system
+  
+  # Ignore differences for status fields
   ignoreDifferences:
     - group: pkg.crossplane.io
       kind: Provider
       jsonPointers:
         - /status
+        - /metadata/annotations
+        - /metadata/finalizers
+    - group: aws.crossplane.io
+      kind: ProviderConfig
+      jsonPointers:
+        - /status
+        - /metadata/annotations
+        - /metadata/finalizers
+  
+  # Revision history limit
+  revisionHistoryLimit: 10
+  
+  # Finalizers for proper cleanup
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io

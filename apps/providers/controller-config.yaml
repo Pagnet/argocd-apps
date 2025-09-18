@@ -1,0 +1,59 @@
+# =============================================================================
+# AWS Provider Controller Configuration
+# =============================================================================
+# This file contains the controller configuration for the AWS provider
+# following security and performance best practices.
+# =============================================================================
+
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-controller-config
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: aws-controller-config
+    app.kubernetes.io/component: crossplane-controller
+    app.kubernetes.io/part-of: crossplane
+    app.kubernetes.io/managed-by: argocd
+spec:
+  # Resource limits and requests for optimal performance
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  
+  # Environment variables for AWS provider
+  env:
+    - name: AWS_REGION
+      value: "us-east-1"
+    - name: AWS_MAX_RETRY_ATTEMPTS
+      value: "3"
+    - name: AWS_RETRY_MODE
+      value: "adaptive"
+  
+  # Node selector for optimal placement
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  # Tolerations for node scheduling
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+  
+  # Pod disruption budget
+  podDisruptionBudget:
+    minAvailable: 1
