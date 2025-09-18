@@ -81,50 +81,6 @@ spec:
   credentials:
     source: InjectedIdentity
 
----
-# Configuração específica para Secrets Manager
-# Compatível com Crossplane v2.0.2+
-apiVersion: secretsmanager.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: secretsmanager-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para ElastiCache
-# Compatível com Crossplane v2.0.2+
-apiVersion: elasticache.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: elasticache-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para Route53
-# Compatível com Crossplane v2.0.2+
-apiVersion: route53.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: route53-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para ECR
-# Compatível com Crossplane v2.0.2+
-apiVersion: ecr.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: ecr-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
+# Nota: Os providers específicos (Secrets Manager, ElastiCache, Route53, ECR)
+# usam o ProviderConfig principal do provider-aws (default)
+# Não é necessário criar ProviderConfigs separados para cada serviço
