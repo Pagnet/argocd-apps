@@ -1,0 +1,125 @@
+# =============================================================================
+# AWS Basic Resources - Crossplane Examples
+# =============================================================================
+# Este arquivo contém exemplos básicos dos principais serviços AWS
+# para demonstrar o funcionamento do Crossplane.
+#
+# Serviços incluídos:
+# - S3 (Storage)
+# - RDS (Database)
+# - EC2 (Compute)
+# - ElastiCache (Cache)
+# - Lambda (Serverless)
+# =============================================================================
+
+---
+# S3 Bucket - Storage básico
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: crossplane-basic-bucket
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: basic-bucket
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: crossplane-examples
+spec:
+  forProvider:
+    region: us-east-1
+  providerConfigRef:
+    name: default
+
+---
+# RDS Instance - Database básico
+apiVersion: rds.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  name: crossplane-basic-db
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: basic-db
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: crossplane-examples
+spec:
+  forProvider:
+    instanceClass: db.t3.micro
+    engine: mysql
+    engineVersion: "8.0"
+    allocatedStorage: 20
+    storageType: gp2
+    region: us-east-1
+    skipFinalSnapshot: true
+  providerConfigRef:
+    name: default
+
+---
+# EC2 Instance - Compute básico
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  name: crossplane-basic-instance
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: basic-instance
+    app.kubernetes.io/component: compute
+    app.kubernetes.io/part-of: crossplane-examples
+spec:
+  forProvider:
+    instanceType: t3.micro
+    ami: ami-0c02fb55956c7d316  # Amazon Linux 2
+    region: us-east-1
+    tags:
+      Name: crossplane-basic-instance
+      Environment: development
+  providerConfigRef:
+    name: default
+
+---
+# ElastiCache Cluster - Cache básico
+apiVersion: elasticache.aws.upbound.io/v1beta1
+kind: ReplicationGroup
+metadata:
+  name: crossplane-basic-cache
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: basic-cache
+    app.kubernetes.io/component: cache
+    app.kubernetes.io/part-of: crossplane-examples
+spec:
+  forProvider:
+    nodeType: cache.t3.micro
+    port: 6379
+    parameterGroupName: default.redis7
+    numCacheNodes: 1
+    engine: redis
+    region: us-east-1
+  providerConfigRef:
+    name: default
+
+---
+# Lambda Function - Serverless básico
+apiVersion: lambda.aws.upbound.io/v1beta1
+kind: Function
+metadata:
+  name: crossplane-basic-function
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: basic-function
+    app.kubernetes.io/component: serverless
+    app.kubernetes.io/part-of: crossplane-examples
+spec:
+  forProvider:
+    functionName: crossplane-basic-function
+    runtime: python3.9
+    handler: index.handler
+    role: arn:aws:iam::414892725800:role/lambda-execution-role
+    region: us-east-1
+    code:
+      zipFile: |
+        def handler(event, context):
+            return {
+                'statusCode': 200,
+                'body': 'Hello from Crossplane Lambda!'
+            }
+  providerConfigRef:
+    name: default

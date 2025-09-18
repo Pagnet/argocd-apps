@@ -1,0 +1,19 @@
+# =============================================================================
+# AWS ElastiCache Provider - Apenas Cache
+# =============================================================================
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-elasticache
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: aws-elasticache-provider
+    app.kubernetes.io/component: crossplane-provider
+    app.kubernetes.io/part-of: crossplane
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-elasticache:v1.0.0
+  packagePullPolicy: IfNotPresent
+  ignoreCrossplaneConstraints: false
