@@ -2,7 +2,7 @@
 # Compatível com Crossplane v2.0.2+
 # Usado por TODOS os recursos AWS (EC2, S3, RDS, EKS, IAM, Lambda, 
 # Secrets Manager, ElastiCache, Route53, ECR, etc.)
-apiVersion: aws.upbound.io/v1beta1
+apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: default
