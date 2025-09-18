@@ -1,5 +1,7 @@
-# Configuração padrão para todos os providers AWS
+# ProviderConfig principal para o provider-aws
 # Compatível com Crossplane v2.0.2+
+# Usado por TODOS os recursos AWS (EC2, S3, RDS, EKS, IAM, Lambda, 
+# Secrets Manager, ElastiCache, Route53, ECR, etc.)
 apiVersion: aws.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -8,79 +10,3 @@ spec:
   region: us-east-1
   credentials:
     source: InjectedIdentity
-
----
-# Configuração específica para EC2
-# Compatível com Crossplane v2.0.2+
-apiVersion: ec2.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: ec2-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para S3
-# Compatível com Crossplane v2.0.2+
-apiVersion: s3.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: s3-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para RDS
-# Compatível com Crossplane v2.0.2+
-apiVersion: rds.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: rds-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para EKS
-# Compatível com Crossplane v2.0.2+
-apiVersion: eks.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: eks-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para IAM
-# Compatível com Crossplane v2.0.2+
-apiVersion: iam.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: iam-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
----
-# Configuração específica para Lambda
-# Compatível com Crossplane v2.0.2+
-apiVersion: lambda.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: lambda-config
-spec:
-  region: us-east-1
-  credentials:
-    source: InjectedIdentity
-
-# Nota: Os providers específicos (Secrets Manager, ElastiCache, Route53, ECR)
-# usam o ProviderConfig principal do provider-aws (default)
-# Não é necessário criar ProviderConfigs separados para cada serviço
