@@ -19,8 +19,6 @@ metadata:
 spec:
   forProvider:
     region: us-east-1
-    versioning:
-      enabled: true
   providerConfigRef:
     name: default
 
