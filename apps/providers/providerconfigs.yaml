@@ -1,87 +1,26 @@
 # =============================================================================
-# AWS Providers Configuration - Specific Services Only
+# AWS Provider Configuration - Single Default Config
 # =============================================================================
-# This file contains the AWS provider configurations for specific services
-# to reduce resource usage and improve performance.
+# This file contains a single AWS provider configuration that works
+# for all specific service providers.
 # =============================================================================
 
 ---
-# S3 ProviderConfig
-apiVersion: s3.aws.upbound.io/v1beta1
+# Default ProviderConfig for all AWS services
+apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: default
   namespace: crossplane-system
   labels:
-    app.kubernetes.io/name: aws-s3-config
+    app.kubernetes.io/name: aws-provider-config
     app.kubernetes.io/component: crossplane-provider
     app.kubernetes.io/part-of: crossplane
     app.kubernetes.io/managed-by: argocd
+  annotations:
+    crossplane.io/description: "Default AWS ProviderConfig using IRSA"
 spec:
-  credentials:
-    source: InjectedIdentity
-
----
-# RDS ProviderConfig
-apiVersion: rds.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-  namespace: crossplane-system
-  labels:
-    app.kubernetes.io/name: aws-rds-config
-    app.kubernetes.io/component: crossplane-provider
-    app.kubernetes.io/part-of: crossplane
-    app.kubernetes.io/managed-by: argocd
-spec:
-  credentials:
-    source: InjectedIdentity
-
----
-# EC2 ProviderConfig
-apiVersion: ec2.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-  namespace: crossplane-system
-  labels:
-    app.kubernetes.io/name: aws-ec2-config
-    app.kubernetes.io/component: crossplane-provider
-    app.kubernetes.io/part-of: crossplane
-    app.kubernetes.io/managed-by: argocd
-spec:
-  credentials:
-    source: InjectedIdentity
-
----
-# ElastiCache ProviderConfig
-apiVersion: elasticache.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-  namespace: crossplane-system
-  labels:
-    app.kubernetes.io/name: aws-elasticache-config
-    app.kubernetes.io/component: crossplane-provider
-    app.kubernetes.io/part-of: crossplane
-    app.kubernetes.io/managed-by: argocd
-spec:
-  credentials:
-    source: InjectedIdentity
-
----
-# Lambda ProviderConfig
-apiVersion: lambda.aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-  namespace: crossplane-system
-  labels:
-    app.kubernetes.io/name: aws-lambda-config
-    app.kubernetes.io/component: crossplane-provider
-    app.kubernetes.io/part-of: crossplane
-    app.kubernetes.io/managed-by: argocd
-spec:
+  # Use IRSA for secure authentication
   credentials:
     source: InjectedIdentity
 
