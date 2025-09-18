@@ -7,5 +7,5 @@ kind: Provider
 metadata:
   name: provider-aws
 spec:
-  package: xpkg.upbound.io/upbound/provider-aws:v2.0.2
+  package: xpkg.upbound.io/upbound/provider-aws:latest
   ignoreCrossplaneConstraints: false
