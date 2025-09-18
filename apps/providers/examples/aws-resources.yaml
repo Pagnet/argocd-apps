@@ -21,10 +21,6 @@ spec:
     region: us-east-1
     versioning:
       enabled: true
-    serverSideEncryptionConfiguration:
-      rule:
-        - applyServerSideEncryptionByDefault:
-            sseAlgorithm: "AES256"
   providerConfigRef:
     name: default
 
