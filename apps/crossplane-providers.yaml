@@ -43,14 +43,8 @@ spec:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
   
-  # Sync policy with best practices
+  # Sync policy - minimal configuration to avoid health check issues
   syncPolicy:
-    # Manual sync to avoid health check issues with Provider resources
-    # automated:
-    #   prune: true
-    #   selfHeal: true
-    #   allowEmpty: false
-    
     # Sync options for optimal behavior
     syncOptions:
       - CreateNamespace=true
@@ -61,17 +55,8 @@ spec:
       - ApplyOutOfSyncOnly=true
       - Replace=true
       - Force=true
-    
-    # Retry configuration with exponential backoff
-    retry:
-      limit: 10
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 5m
-    
-    # Health check disabled due to ArgoCD compatibility issues with Provider resources
-    # healthChecks: []
+      - SkipDryRunOnMissingResource=true
+      - RespectIgnoreDifferences=true
   
   # Ignore differences for status fields and health check issues
   ignoreDifferences:
@@ -82,6 +67,8 @@ spec:
         - /metadata/annotations
         - /metadata/finalizers
         - /spec
+        - /metadata/labels
+        - /metadata/ownerReferences
     - group: aws.crossplane.io
       kind: ProviderConfig
       jsonPointers:
@@ -89,6 +76,8 @@ spec:
         - /metadata/annotations
         - /metadata/finalizers
         - /spec
+        - /metadata/labels
+        - /metadata/ownerReferences
   
   # Revision history limit
   revisionHistoryLimit: 10
@@ -96,3 +85,20 @@ spec:
   # Finalizers for proper cleanup
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  
+  # Additional configuration to handle Provider resources
+  operation:
+    initiatedBy:
+      automated: false
+    sync:
+      revision: HEAD
+      syncOptions:
+        - CreateNamespace=true
+        - PrunePropagationPolicy=foreground
+        - PruneLast=true
+        - RespectIgnoreDifferences=true
+        - ServerSideApply=true
+        - ApplyOutOfSyncOnly=true
+        - Replace=true
+        - Force=true
+        - SkipDryRunOnMissingResource=true
