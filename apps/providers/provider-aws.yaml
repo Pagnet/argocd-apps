@@ -1,19 +1,23 @@
 # =============================================================================
-# AWS ElastiCache Provider - Apenas Cache
+# AWS Provider - Optimized Configuration
 # =============================================================================
+# Este arquivo define o Provider AWS principal com configuração otimizada
+# para reduzir o uso de recursos e melhorar a performance.
+# =============================================================================
+
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-aws-elasticache
+  name: provider-aws
   namespace: crossplane-system
   labels:
-    app.kubernetes.io/name: aws-elasticache-provider
+    app.kubernetes.io/name: aws-provider
     app.kubernetes.io/component: crossplane-provider
     app.kubernetes.io/part-of: crossplane
     app.kubernetes.io/managed-by: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  package: xpkg.upbound.io/upbound/provider-aws-elasticache:v1.0.0
+  package: xpkg.upbound.io/upbound/provider-aws:v1.14.0
   packagePullPolicy: IfNotPresent
   ignoreCrossplaneConstraints: false
