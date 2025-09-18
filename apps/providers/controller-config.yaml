@@ -5,7 +5,7 @@
 # following security and performance best practices for Crossplane v2.
 # =============================================================================
 
-apiVersion: pkg.crossplane.io/v1alpha1
+apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: aws-controller-config
