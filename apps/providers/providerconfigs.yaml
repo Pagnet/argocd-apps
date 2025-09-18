@@ -23,7 +23,4 @@ spec:
   # Use IRSA for secure authentication (working configuration)
   credentials:
     source: InjectedIdentity
-  
-  # Default region configuration (matching cluster)
-  region: us-east-1
 
