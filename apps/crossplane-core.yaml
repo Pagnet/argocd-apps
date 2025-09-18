@@ -12,8 +12,8 @@ spec:
     helm:
       releaseName: crossplane
       values: |
-        args:
-          - --enable-environment-configs
+        # Environment configs were removed in Crossplane 1.18+
+        # Use Composition Functions instead
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
