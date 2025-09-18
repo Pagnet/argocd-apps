@@ -1,23 +1,22 @@
 # =============================================================================
-# Crossplane Providers Application - ArgoCD Configuration
+# Crossplane AWS Provider - Aplicação Separada
 # =============================================================================
-# This file defines the ArgoCD application for managing Crossplane providers
-# following GitOps best practices and production-ready configurations.
+# Esta aplicação gerencia apenas o Provider AWS para evitar problemas
+# de health check do ArgoCD com recursos do tipo Provider.
 #
-# Features:
-# - GitOps workflow with ArgoCD
-# - Health check optimization
-# - Retry and backoff strategies
-# - Security and compliance ready
+# Estratégia:
+# - Aplicação separada apenas para o Provider
+# - Sem health checks problemáticos
+# - Sync manual para controle total
 # =============================================================================
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: crossplane-providers
+  name: crossplane-provider-aws-only
   namespace: argocd
   labels:
-    app.kubernetes.io/name: crossplane-providers
+    app.kubernetes.io/name: crossplane-provider-aws
     app.kubernetes.io/component: crossplane
     app.kubernetes.io/part-of: platform
     app.kubernetes.io/managed-by: argocd
@@ -34,21 +33,16 @@ spec:
     targetRevision: HEAD
     path: apps/providers
     directory:
-      recurse: true
-      include: "*.yaml"
-      exclude: "provider-aws.yaml"  # Excluir Provider - gerenciado separadamente
+      recurse: false
+      include: "provider-aws.yaml"
   
   # Destination configuration
   destination:
     server: https://kubernetes.default.svc
     namespace: crossplane-system
   
-  # Sync policy - simplified for non-Provider resources
+  # Sync policy - minimal configuration
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      allowEmpty: false
     syncOptions:
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground
@@ -56,24 +50,24 @@ spec:
       - RespectIgnoreDifferences=true
       - ServerSideApply=true
       - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+      - Replace=true
+      - Force=true
+      - SkipDryRunOnMissingResource=true
   
-  # Ignore differences for ProviderConfig resources only
+  # Ignore differences for Provider resources
   ignoreDifferences:
-    - group: aws.crossplane.io
-      kind: ProviderConfig
+    - group: pkg.crossplane.io
+      kind: Provider
       jsonPointers:
         - /status
         - /metadata/annotations
         - /metadata/finalizers
+        - /spec
+        - /metadata/labels
+        - /metadata/ownerReferences
   
   # Revision history limit
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 5
   
   # Finalizers for proper cleanup
   finalizers:
