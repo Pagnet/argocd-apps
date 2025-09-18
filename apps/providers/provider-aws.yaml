@@ -24,7 +24,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  package: xpkg.upbound.io/upbound/provider-aws:latest
+  package: xpkg.upbound.io/upbound/provider-aws:v1.14.0
   packagePullPolicy: IfNotPresent
   ignoreCrossplaneConstraints: false
   controllerConfigRef:

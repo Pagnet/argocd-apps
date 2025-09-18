@@ -1,18 +1,12 @@
 # =============================================================================
-# AWS Provider Configuration - Security & Best Practices
+# AWS Provider Configuration - Based on Working Cluster Configuration
 # =============================================================================
-# This file contains the AWS provider configuration following security
-# best practices with IRSA (IAM Roles for Service Accounts) support.
-#
-# Security Features:
-# - IRSA-based authentication (recommended for production)
-# - No hardcoded credentials
-# - Secure credential management
-# - Multi-region support
+# This file contains the AWS provider configuration based on the working
+# configuration found in the cluster.
 # =============================================================================
 
 ---
-# Primary ProviderConfig using IRSA (Recommended for Production)
+# Primary ProviderConfig using IRSA (Working Configuration)
 apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -26,21 +20,10 @@ metadata:
   annotations:
     crossplane.io/description: "Primary AWS ProviderConfig using IRSA"
 spec:
-  # Use IRSA for secure authentication (recommended)
+  # Use IRSA for secure authentication (working configuration)
   credentials:
     source: InjectedIdentity
   
-  # Default region configuration
+  # Default region configuration (matching cluster)
   region: us-east-1
-  
-  # Global settings for all AWS operations
-  assumeRoleARN: ""  # Optional: specify role ARN if needed
-  
-  # Retry configuration
-  assumeRoleDurationSeconds: 3600
-  
-  # Additional configuration
-  assumeRoleWithWebIdentity:
-    roleARN: ""  # Set this if using specific IAM role
-    webIdentityTokenFile: "/var/run/secrets/eks.amazonaws.com/serviceaccount/token"
 
