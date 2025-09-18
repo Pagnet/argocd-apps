@@ -9,7 +9,6 @@ apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: aws-controller-config
-  namespace: crossplane-system
   labels:
     app.kubernetes.io/name: aws-controller-config
     app.kubernetes.io/component: crossplane-controller
