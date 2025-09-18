@@ -48,13 +48,8 @@ spec:
       - PrunePropagationPolicy=foreground
       - PruneLast=true
       - RespectIgnoreDifferences=true
-      - ServerSideApply=true
-      - ApplyOutOfSyncOnly=true
-      - Replace=true
-      - Force=true
-      - SkipDryRunOnMissingResource=true
   
-  # Ignore differences for Provider resources
+  # Ignore differences for Provider resources - simplified
   ignoreDifferences:
     - group: pkg.crossplane.io
       kind: Provider
@@ -62,9 +57,6 @@ spec:
         - /status
         - /metadata/annotations
         - /metadata/finalizers
-        - /spec
-        - /metadata/labels
-        - /metadata/ownerReferences
   
   # Revision history limit
   revisionHistoryLimit: 5
