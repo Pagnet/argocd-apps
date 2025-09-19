@@ -22,5 +22,5 @@ metadata:
 spec:
   # Use IRSA for secure authentication
   credentials:
-    source: InjectedIdentity
+    source: IRSA
 
