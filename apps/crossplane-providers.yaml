@@ -79,7 +79,3 @@ spec:
   
   # Revision history limit
   revisionHistoryLimit: 10
-  
-  # Finalizers for proper cleanup
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
